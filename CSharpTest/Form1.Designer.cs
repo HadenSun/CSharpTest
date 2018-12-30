@@ -45,16 +45,33 @@
             this.buttonRefresh = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.checkBoxCheck = new System.Windows.Forms.CheckBox();
+            this.checkBoxHexSend = new System.Windows.Forms.CheckBox();
+            this.checkBoxHexRecive = new System.Windows.Forms.CheckBox();
+            this.buttonClear = new System.Windows.Forms.Button();
             this.buttonSend = new System.Windows.Forms.Button();
             this.textBoxSend = new System.Windows.Forms.TextBox();
             this.textBoxRecive = new System.Windows.Forms.TextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.buttonClear = new System.Windows.Forms.Button();
-            this.checkBoxHexRecive = new System.Windows.Forms.CheckBox();
-            this.checkBoxHexSend = new System.Windows.Forms.CheckBox();
-            this.checkBoxCheck = new System.Windows.Forms.CheckBox();
+            this.buttonSocketClean = new System.Windows.Forms.Button();
+            this.textBoxPort = new System.Windows.Forms.TextBox();
+            this.labelPort = new System.Windows.Forms.Label();
+            this.labelIPAddress = new System.Windows.Forms.Label();
+            this.labelType = new System.Windows.Forms.Label();
+            this.comboBoxType = new System.Windows.Forms.ComboBox();
+            this.buttonSocketOpen = new System.Windows.Forms.Button();
+            this.checkBoxSocketHexSend = new System.Windows.Forms.CheckBox();
+            this.checkBoxSocketHexRecive = new System.Windows.Forms.CheckBox();
+            this.buttonSocketSend = new System.Windows.Forms.Button();
+            this.textBoxSocketSend = new System.Windows.Forms.TextBox();
+            this.textBoxSocketRecive = new System.Windows.Forms.TextBox();
+            this.comboBoxIPAddress = new System.Windows.Forms.ComboBox();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonConnect
@@ -72,9 +89,9 @@
             this.labelCom.AutoSize = true;
             this.labelCom.Location = new System.Drawing.Point(31, 59);
             this.labelCom.Name = "labelCom";
-            this.labelCom.Size = new System.Drawing.Size(23, 12);
+            this.labelCom.Size = new System.Drawing.Size(41, 12);
             this.labelCom.TabIndex = 1;
-            this.labelCom.Text = "COM";
+            this.labelCom.Text = "串口号";
             // 
             // labelBaudrate
             // 
@@ -220,6 +237,49 @@
             this.tabPage1.Text = "串口";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // checkBoxCheck
+            // 
+            this.checkBoxCheck.AutoSize = true;
+            this.checkBoxCheck.Location = new System.Drawing.Point(134, 214);
+            this.checkBoxCheck.Name = "checkBoxCheck";
+            this.checkBoxCheck.Size = new System.Drawing.Size(48, 16);
+            this.checkBoxCheck.TabIndex = 19;
+            this.checkBoxCheck.Text = "校验";
+            this.checkBoxCheck.UseVisualStyleBackColor = true;
+            this.checkBoxCheck.CheckedChanged += new System.EventHandler(this.checkBoxCheck_CheckedChanged);
+            // 
+            // checkBoxHexSend
+            // 
+            this.checkBoxHexSend.AutoSize = true;
+            this.checkBoxHexSend.Location = new System.Drawing.Point(33, 211);
+            this.checkBoxHexSend.Name = "checkBoxHexSend";
+            this.checkBoxHexSend.Size = new System.Drawing.Size(66, 16);
+            this.checkBoxHexSend.TabIndex = 18;
+            this.checkBoxHexSend.Text = "HEX发送";
+            this.checkBoxHexSend.UseVisualStyleBackColor = true;
+            this.checkBoxHexSend.CheckedChanged += new System.EventHandler(this.checkBoxHexSend_CheckedChanged);
+            // 
+            // checkBoxHexRecive
+            // 
+            this.checkBoxHexRecive.AutoSize = true;
+            this.checkBoxHexRecive.Location = new System.Drawing.Point(33, 189);
+            this.checkBoxHexRecive.Name = "checkBoxHexRecive";
+            this.checkBoxHexRecive.Size = new System.Drawing.Size(66, 16);
+            this.checkBoxHexRecive.TabIndex = 17;
+            this.checkBoxHexRecive.Text = "HEX接收";
+            this.checkBoxHexRecive.UseVisualStyleBackColor = true;
+            this.checkBoxHexRecive.CheckedChanged += new System.EventHandler(this.checkBoxHexRecive_CheckedChanged);
+            // 
+            // buttonClear
+            // 
+            this.buttonClear.Location = new System.Drawing.Point(124, 185);
+            this.buttonClear.Name = "buttonClear";
+            this.buttonClear.Size = new System.Drawing.Size(75, 23);
+            this.buttonClear.TabIndex = 16;
+            this.buttonClear.Text = "清空";
+            this.buttonClear.UseVisualStyleBackColor = true;
+            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+            // 
             // buttonSend
             // 
             this.buttonSend.Location = new System.Drawing.Point(512, 236);
@@ -248,53 +308,161 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.statusStrip1);
+            this.tabPage2.Controls.Add(this.comboBoxIPAddress);
+            this.tabPage2.Controls.Add(this.buttonSocketSend);
+            this.tabPage2.Controls.Add(this.textBoxSocketSend);
+            this.tabPage2.Controls.Add(this.textBoxSocketRecive);
+            this.tabPage2.Controls.Add(this.buttonSocketClean);
+            this.tabPage2.Controls.Add(this.textBoxPort);
+            this.tabPage2.Controls.Add(this.labelPort);
+            this.tabPage2.Controls.Add(this.labelIPAddress);
+            this.tabPage2.Controls.Add(this.labelType);
+            this.tabPage2.Controls.Add(this.comboBoxType);
+            this.tabPage2.Controls.Add(this.buttonSocketOpen);
+            this.tabPage2.Controls.Add(this.checkBoxSocketHexSend);
+            this.tabPage2.Controls.Add(this.checkBoxSocketHexRecive);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(653, 367);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
+            this.tabPage2.Text = "网络";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // buttonClear
+            // buttonSocketClean
             // 
-            this.buttonClear.Location = new System.Drawing.Point(124, 185);
-            this.buttonClear.Name = "buttonClear";
-            this.buttonClear.Size = new System.Drawing.Size(75, 23);
-            this.buttonClear.TabIndex = 16;
-            this.buttonClear.Text = "清空";
-            this.buttonClear.UseVisualStyleBackColor = true;
-            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+            this.buttonSocketClean.Location = new System.Drawing.Point(53, 176);
+            this.buttonSocketClean.Name = "buttonSocketClean";
+            this.buttonSocketClean.Size = new System.Drawing.Size(138, 23);
+            this.buttonSocketClean.TabIndex = 28;
+            this.buttonSocketClean.Text = "清空";
+            this.buttonSocketClean.UseVisualStyleBackColor = true;
             // 
-            // checkBoxHexRecive
+            // textBoxPort
             // 
-            this.checkBoxHexRecive.AutoSize = true;
-            this.checkBoxHexRecive.Location = new System.Drawing.Point(33, 189);
-            this.checkBoxHexRecive.Name = "checkBoxHexRecive";
-            this.checkBoxHexRecive.Size = new System.Drawing.Size(66, 16);
-            this.checkBoxHexRecive.TabIndex = 17;
-            this.checkBoxHexRecive.Text = "HEX接收";
-            this.checkBoxHexRecive.UseVisualStyleBackColor = true;
+            this.textBoxPort.Location = new System.Drawing.Point(53, 127);
+            this.textBoxPort.Name = "textBoxPort";
+            this.textBoxPort.Size = new System.Drawing.Size(138, 21);
+            this.textBoxPort.TabIndex = 27;
+            this.textBoxPort.Text = "5000";
             // 
-            // checkBoxHexSend
+            // labelPort
             // 
-            this.checkBoxHexSend.AutoSize = true;
-            this.checkBoxHexSend.Location = new System.Drawing.Point(33, 211);
-            this.checkBoxHexSend.Name = "checkBoxHexSend";
-            this.checkBoxHexSend.Size = new System.Drawing.Size(66, 16);
-            this.checkBoxHexSend.TabIndex = 18;
-            this.checkBoxHexSend.Text = "HEX发送";
-            this.checkBoxHexSend.UseVisualStyleBackColor = true;
+            this.labelPort.AutoSize = true;
+            this.labelPort.Location = new System.Drawing.Point(51, 112);
+            this.labelPort.Name = "labelPort";
+            this.labelPort.Size = new System.Drawing.Size(41, 12);
+            this.labelPort.TabIndex = 26;
+            this.labelPort.Text = "端口号";
             // 
-            // checkBoxCheck
+            // labelIPAddress
             // 
-            this.checkBoxCheck.AutoSize = true;
-            this.checkBoxCheck.Location = new System.Drawing.Point(134, 214);
-            this.checkBoxCheck.Name = "checkBoxCheck";
-            this.checkBoxCheck.Size = new System.Drawing.Size(48, 16);
-            this.checkBoxCheck.TabIndex = 19;
-            this.checkBoxCheck.Text = "校验";
-            this.checkBoxCheck.UseVisualStyleBackColor = true;
+            this.labelIPAddress.AutoSize = true;
+            this.labelIPAddress.Location = new System.Drawing.Point(51, 73);
+            this.labelIPAddress.Name = "labelIPAddress";
+            this.labelIPAddress.Size = new System.Drawing.Size(41, 12);
+            this.labelIPAddress.TabIndex = 25;
+            this.labelIPAddress.Text = "IP地址";
+            // 
+            // labelType
+            // 
+            this.labelType.AutoSize = true;
+            this.labelType.Location = new System.Drawing.Point(51, 35);
+            this.labelType.Name = "labelType";
+            this.labelType.Size = new System.Drawing.Size(53, 12);
+            this.labelType.TabIndex = 24;
+            this.labelType.Text = "协议类型";
+            // 
+            // comboBoxType
+            // 
+            this.comboBoxType.FormattingEnabled = true;
+            this.comboBoxType.Items.AddRange(new object[] {
+            "UDP",
+            "TCP Server",
+            "TCP Client"});
+            this.comboBoxType.Location = new System.Drawing.Point(53, 50);
+            this.comboBoxType.Name = "comboBoxType";
+            this.comboBoxType.Size = new System.Drawing.Size(138, 20);
+            this.comboBoxType.TabIndex = 23;
+            // 
+            // buttonSocketOpen
+            // 
+            this.buttonSocketOpen.Location = new System.Drawing.Point(53, 205);
+            this.buttonSocketOpen.Name = "buttonSocketOpen";
+            this.buttonSocketOpen.Size = new System.Drawing.Size(138, 23);
+            this.buttonSocketOpen.TabIndex = 21;
+            this.buttonSocketOpen.Text = "连接";
+            this.buttonSocketOpen.UseVisualStyleBackColor = true;
+            this.buttonSocketOpen.Click += new System.EventHandler(this.buttonSocketOpen_Click);
+            // 
+            // checkBoxSocketHexSend
+            // 
+            this.checkBoxSocketHexSend.AutoSize = true;
+            this.checkBoxSocketHexSend.Location = new System.Drawing.Point(125, 154);
+            this.checkBoxSocketHexSend.Name = "checkBoxSocketHexSend";
+            this.checkBoxSocketHexSend.Size = new System.Drawing.Size(66, 16);
+            this.checkBoxSocketHexSend.TabIndex = 20;
+            this.checkBoxSocketHexSend.Text = "HEX发送";
+            this.checkBoxSocketHexSend.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxSocketHexRecive
+            // 
+            this.checkBoxSocketHexRecive.AutoSize = true;
+            this.checkBoxSocketHexRecive.Location = new System.Drawing.Point(53, 154);
+            this.checkBoxSocketHexRecive.Name = "checkBoxSocketHexRecive";
+            this.checkBoxSocketHexRecive.Size = new System.Drawing.Size(66, 16);
+            this.checkBoxSocketHexRecive.TabIndex = 19;
+            this.checkBoxSocketHexRecive.Text = "HEX接收";
+            this.checkBoxSocketHexRecive.UseVisualStyleBackColor = true;
+            // 
+            // buttonSocketSend
+            // 
+            this.buttonSocketSend.Location = new System.Drawing.Point(504, 207);
+            this.buttonSocketSend.Name = "buttonSocketSend";
+            this.buttonSocketSend.Size = new System.Drawing.Size(75, 23);
+            this.buttonSocketSend.TabIndex = 31;
+            this.buttonSocketSend.Text = "发送";
+            this.buttonSocketSend.UseVisualStyleBackColor = true;
+            // 
+            // textBoxSocketSend
+            // 
+            this.textBoxSocketSend.Location = new System.Drawing.Point(197, 207);
+            this.textBoxSocketSend.Name = "textBoxSocketSend";
+            this.textBoxSocketSend.Size = new System.Drawing.Size(301, 21);
+            this.textBoxSocketSend.TabIndex = 30;
+            // 
+            // textBoxSocketRecive
+            // 
+            this.textBoxSocketRecive.Location = new System.Drawing.Point(197, 35);
+            this.textBoxSocketRecive.Multiline = true;
+            this.textBoxSocketRecive.Name = "textBoxSocketRecive";
+            this.textBoxSocketRecive.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxSocketRecive.Size = new System.Drawing.Size(382, 164);
+            this.textBoxSocketRecive.TabIndex = 29;
+            // 
+            // comboBoxIPAddress
+            // 
+            this.comboBoxIPAddress.FormattingEnabled = true;
+            this.comboBoxIPAddress.Location = new System.Drawing.Point(53, 88);
+            this.comboBoxIPAddress.Name = "comboBoxIPAddress";
+            this.comboBoxIPAddress.Size = new System.Drawing.Size(138, 20);
+            this.comboBoxIPAddress.TabIndex = 32;
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel});
+            this.statusStrip1.Location = new System.Drawing.Point(3, 342);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(647, 22);
+            this.statusStrip1.TabIndex = 33;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel
+            // 
+            this.toolStripStatusLabel.Name = "toolStripStatusLabel";
+            this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // Form1
             // 
@@ -307,6 +475,10 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -336,6 +508,21 @@
         private System.Windows.Forms.CheckBox checkBoxHexSend;
         private System.Windows.Forms.CheckBox checkBoxHexRecive;
         private System.Windows.Forms.Button buttonClear;
+        private System.Windows.Forms.CheckBox checkBoxSocketHexSend;
+        private System.Windows.Forms.CheckBox checkBoxSocketHexRecive;
+        private System.Windows.Forms.Button buttonSocketOpen;
+        private System.Windows.Forms.Label labelIPAddress;
+        private System.Windows.Forms.Label labelType;
+        private System.Windows.Forms.ComboBox comboBoxType;
+        private System.Windows.Forms.Label labelPort;
+        private System.Windows.Forms.Button buttonSocketClean;
+        private System.Windows.Forms.TextBox textBoxPort;
+        private System.Windows.Forms.Button buttonSocketSend;
+        private System.Windows.Forms.TextBox textBoxSocketSend;
+        private System.Windows.Forms.TextBox textBoxSocketRecive;
+        private System.Windows.Forms.ComboBox comboBoxIPAddress;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
 
 
     }
