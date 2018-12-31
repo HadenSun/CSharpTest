@@ -25,6 +25,7 @@ namespace CSharpTest
         //变量定义
         delegate void UpdateTextEventHandler(string text);       //委托
         UpdateTextEventHandler updateText;                       //事件
+        private static byte[] data;
 
         /// <summary> 初始化函数
         /// </summary>
@@ -40,7 +41,8 @@ namespace CSharpTest
             string[] ports = SerialPort.GetPortNames();
             comboBoxCom.Items.Clear();
             comboBoxCom.Items.AddRange(ports);
-            comboBoxCom.SelectedIndex = 0;
+            if(comboBoxCom.Items.Count > 0)
+                comboBoxCom.SelectedIndex = 0;
 
             //网络初始化
             comboBoxType.SelectedIndex = 0;
@@ -127,7 +129,8 @@ namespace CSharpTest
             string[] ports = SerialPort.GetPortNames();
             comboBoxCom.Items.Clear();
             comboBoxCom.Items.AddRange(ports);
-            comboBoxCom.SelectedIndex = 0;
+            if(comboBoxCom.Items.Count > 0)
+                comboBoxCom.SelectedIndex = 0;
         }
 
         /// <summary> 委托方法更新串口接收textBox区域内容
@@ -311,9 +314,10 @@ namespace CSharpTest
 
             if (comboBoxType.SelectedIndex == 1)
             {
+                
                 //TCP Server
                 socket.Bind(ipe);                               //绑定
-                socket.Listen(0);                               //连接数无限制
+                socket.Listen(5);                               //连接数无限制
                 socket.BeginAccept(AcceptCallBack, socket);     //调用异步连接
 
                 toolStripStatusLabel.Text = "开始监听";
@@ -331,6 +335,50 @@ namespace CSharpTest
         static void AcceptCallBack(IAsyncResult result)
         {
             Socket serverSocket = result.AsyncState as Socket;
+            //在接收到一台要连入的计算机后，我们要获得接入的计算机的信息，//就需要一个Socket专门用于和它通信。我们再声明一个clientSocket,//用于接收和发送接入方的数据
+            Socket clientSocket = serverSocket.EndAccept(result);
+            //在获得这个clientSocket后，使用BeginReceive方法来接收数据 
+            clientSocket.BeginReceive(data, 0, 1024, SocketFlags.None, ReceiveCallBack, clientSocket);
+            //建立了通信，开启接收数据后，我们要循环接收其他要连接的计算机，所以这里接着进行等待接收，这样就实现了一个循环不断的接收
+            serverSocket.BeginAccept(AcceptCallBack, serverSocket);
+            
         }
+
+        /// <summary> 异步接受数据
+        /// </summary>
+        /// <param name="result"></param>
+        static void ReceiveCallBack(IAsyncResult result)
+        {
+            //声明一个空的Socket
+            Socket clientSocket = null;
+            //当客户端被暴力关掉后，会造成服务器端的报警，这里将它try catch起来，防止程序崩溃
+            try
+            {
+                //将传入的clientSocket进行接收，并且完成接收数据的操作
+                clientSocket = result.AsyncState as Socket;
+                int length = clientSocket.EndReceive(result);
+                string message = Encoding.ASCII.GetString(data, 0, length);
+
+                //如果客户端正常关闭后，会向服务端发送长度为0的空数据，利用这一点将这个客户端关闭
+                if (length == 0)
+                {
+                    clientSocket.Close();
+                    return;
+                }
+                Console.WriteLine("收到消息：" + message);
+                //重新调用开始接收数据
+                clientSocket.BeginReceive(data, 0, 1024, SocketFlags.None, ReceiveCallBack, clientSocket);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                if (clientSocket != null)
+                {
+                    clientSocket.Close();
+                }
+            }
+
+        }
+
     }
 }
