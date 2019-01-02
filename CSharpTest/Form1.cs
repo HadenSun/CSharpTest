@@ -20,12 +20,17 @@ namespace CSharpTest
         private bool _HexSend = false;
         private bool _HexRecive = false;
         private bool _ReciveCheck = false;
+        private bool _SocketHexRecive = false;
+        private bool _SocketHexSend = false;
         Socket socket;
 
         //变量定义
-        delegate void UpdateTextEventHandler(string text);       //委托
-        UpdateTextEventHandler updateText;                       //事件
-        private static byte[] data;
+        delegate void UpdateTextEventHandler(string text);       //串口委托
+        UpdateTextEventHandler updateText;                       //串口事件
+        delegate void UpdateSocketTextEventHandler(string text);    //socket委托
+        UpdateSocketTextEventHandler updateSocket;                  //socket事件
+        private static byte[] data = new byte[2048];
+        List<Socket> socketList = new List<Socket>();
 
         /// <summary> 初始化函数
         /// </summary>
@@ -70,8 +75,12 @@ namespace CSharpTest
             }
             comboBoxIPAddress.SelectedIndex = 0;
 
+            //事件委托
             updateText += new UpdateTextEventHandler(UpdateTextBox);                    //委托方法
             serialPort.DataReceived += new SerialDataReceivedEventHandler(dataRecive);  //处理串口对象的数据接受事件的方法
+
+            updateSocket += new UpdateSocketTextEventHandler(UpdateSocketBox);          //委托方法
+
         }
 
         /// <summary> 串口连接按钮，点击后自动填写参数，打开串口
@@ -332,8 +341,9 @@ namespace CSharpTest
         /// <summary> 服务器端异步连接
         /// </summary>
         /// <param name="result"></param>
-        static void AcceptCallBack(IAsyncResult result)
+        private void AcceptCallBack(IAsyncResult result)
         {
+
             Socket serverSocket = result.AsyncState as Socket;
             //在接收到一台要连入的计算机后，我们要获得接入的计算机的信息，//就需要一个Socket专门用于和它通信。我们再声明一个clientSocket,//用于接收和发送接入方的数据
             Socket clientSocket = serverSocket.EndAccept(result);
@@ -341,13 +351,20 @@ namespace CSharpTest
             clientSocket.BeginReceive(data, 0, 1024, SocketFlags.None, ReceiveCallBack, clientSocket);
             //建立了通信，开启接收数据后，我们要循环接收其他要连接的计算机，所以这里接着进行等待接收，这样就实现了一个循环不断的接收
             serverSocket.BeginAccept(AcceptCallBack, serverSocket);
+
+            socketList.Add(clientSocket);
+
+            this.Invoke(new Action(() =>
+            {
+                toolStripStatusLabel.Text = clientSocket.RemoteEndPoint.ToString()+"连接";
+            }));
             
         }
 
         /// <summary> 异步接受数据
         /// </summary>
         /// <param name="result"></param>
-        static void ReceiveCallBack(IAsyncResult result)
+        private void ReceiveCallBack(IAsyncResult result)
         {
             //声明一个空的Socket
             Socket clientSocket = null;
@@ -358,14 +375,33 @@ namespace CSharpTest
                 clientSocket = result.AsyncState as Socket;
                 int length = clientSocket.EndReceive(result);
                 string message = Encoding.ASCII.GetString(data, 0, length);
+                string newString = "";
 
                 //如果客户端正常关闭后，会向服务端发送长度为0的空数据，利用这一点将这个客户端关闭
                 if (length == 0)
                 {
+                    this.Invoke(new Action(() => {
+                        toolStripStatusLabel.Text = clientSocket.RemoteEndPoint.ToString() + "断开";
+                    }));
                     clientSocket.Close();
                     return;
                 }
-                Console.WriteLine("收到消息：" + message);
+
+                //HEX显示或字符显示
+                if(_SocketHexRecive)
+                {
+                    foreach(byte b in message)
+                    {
+                        newString += b.ToString("X").PadLeft(2, '0') + " ";
+                    }
+                }
+                else
+                {
+                    newString = message;
+                }
+
+                this.Invoke(updateSocket, new string[] { newString });    //控件基础句柄线程上，执行委托
+
                 //重新调用开始接收数据
                 clientSocket.BeginReceive(data, 0, 1024, SocketFlags.None, ReceiveCallBack, clientSocket);
             }
@@ -379,6 +415,91 @@ namespace CSharpTest
             }
 
         }
+
+        /// <summary> 事件委托，更新Socket接收UI
+        /// </summary>
+        /// <param name="text"></param>
+        private void UpdateSocketBox(string text)
+        {
+            textBoxSocketRecive.AppendText(text+"\n");
+        }
+
+        /// <summary> socket HEX接收勾选框
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void checkBoxSocketHexRecive_CheckedChanged(object sender, EventArgs e)
+        {
+            _SocketHexRecive = checkBoxSocketHexRecive.Checked;
+        }
+
+        /// <summary> socket HEX发送勾选框
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void checkBoxSocketHexSend_CheckedChanged(object sender, EventArgs e)
+        {
+            _SocketHexSend = checkBoxSocketHexSend.Checked;
+        }
+
+        /// <summary> Socket 发送按钮点击
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonSocketSend_Click(object sender, EventArgs e)
+        {
+            string data = textBoxSocketSend.Text;
+            byte[] byteData = new byte[1];
+
+            if (_SocketHexSend)
+            {
+                try
+                {
+                    string da = data.Replace(" ", "");
+                    if((da.Length %2)!=0)
+                    {
+                        da += " ";
+                    }
+                    byteData = new byte[da.Length / 2];
+                    for(int i = 0;i<byteData.Length;i++)
+                    {
+                        byteData[i] = Convert.ToByte(da.Substring(i * 2, 2), 16);
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                byteData = Encoding.ASCII.GetBytes(data);
+            }
+
+            foreach(Socket clientSocket in socketList)
+                clientSocket.BeginSend(byteData, 0, byteData.Length, SocketFlags.None, SendCallBack, clientSocket);
+        }
+
+        /// <summary> Socket异步发送
+        /// </summary>
+        /// <param name="result"></param>
+        private void SendCallBack(IAsyncResult result)
+        {
+            try
+            {
+                Socket client = result.AsyncState as Socket;
+
+                int btyesSent = client.EndSend(result);
+                
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        
 
     }
 }

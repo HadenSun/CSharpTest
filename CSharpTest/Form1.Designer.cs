@@ -53,6 +53,12 @@
             this.textBoxSend = new System.Windows.Forms.TextBox();
             this.textBoxRecive = new System.Windows.Forms.TextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.comboBoxIPAddress = new System.Windows.Forms.ComboBox();
+            this.buttonSocketSend = new System.Windows.Forms.Button();
+            this.textBoxSocketSend = new System.Windows.Forms.TextBox();
+            this.textBoxSocketRecive = new System.Windows.Forms.TextBox();
             this.buttonSocketClean = new System.Windows.Forms.Button();
             this.textBoxPort = new System.Windows.Forms.TextBox();
             this.labelPort = new System.Windows.Forms.Label();
@@ -62,12 +68,6 @@
             this.buttonSocketOpen = new System.Windows.Forms.Button();
             this.checkBoxSocketHexSend = new System.Windows.Forms.CheckBox();
             this.checkBoxSocketHexRecive = new System.Windows.Forms.CheckBox();
-            this.buttonSocketSend = new System.Windows.Forms.Button();
-            this.textBoxSocketSend = new System.Windows.Forms.TextBox();
-            this.textBoxSocketRecive = new System.Windows.Forms.TextBox();
-            this.comboBoxIPAddress = new System.Windows.Forms.ComboBox();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -330,6 +330,55 @@
             this.tabPage2.Text = "网络";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel});
+            this.statusStrip1.Location = new System.Drawing.Point(3, 342);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(647, 22);
+            this.statusStrip1.TabIndex = 33;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel
+            // 
+            this.toolStripStatusLabel.Name = "toolStripStatusLabel";
+            this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
+            // 
+            // comboBoxIPAddress
+            // 
+            this.comboBoxIPAddress.FormattingEnabled = true;
+            this.comboBoxIPAddress.Location = new System.Drawing.Point(53, 88);
+            this.comboBoxIPAddress.Name = "comboBoxIPAddress";
+            this.comboBoxIPAddress.Size = new System.Drawing.Size(138, 20);
+            this.comboBoxIPAddress.TabIndex = 32;
+            // 
+            // buttonSocketSend
+            // 
+            this.buttonSocketSend.Location = new System.Drawing.Point(504, 207);
+            this.buttonSocketSend.Name = "buttonSocketSend";
+            this.buttonSocketSend.Size = new System.Drawing.Size(75, 23);
+            this.buttonSocketSend.TabIndex = 31;
+            this.buttonSocketSend.Text = "发送";
+            this.buttonSocketSend.UseVisualStyleBackColor = true;
+            this.buttonSocketSend.Click += new System.EventHandler(this.buttonSocketSend_Click);
+            // 
+            // textBoxSocketSend
+            // 
+            this.textBoxSocketSend.Location = new System.Drawing.Point(197, 207);
+            this.textBoxSocketSend.Name = "textBoxSocketSend";
+            this.textBoxSocketSend.Size = new System.Drawing.Size(301, 21);
+            this.textBoxSocketSend.TabIndex = 30;
+            // 
+            // textBoxSocketRecive
+            // 
+            this.textBoxSocketRecive.Location = new System.Drawing.Point(197, 35);
+            this.textBoxSocketRecive.Multiline = true;
+            this.textBoxSocketRecive.Name = "textBoxSocketRecive";
+            this.textBoxSocketRecive.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxSocketRecive.Size = new System.Drawing.Size(382, 164);
+            this.textBoxSocketRecive.TabIndex = 29;
+            // 
             // buttonSocketClean
             // 
             this.buttonSocketClean.Location = new System.Drawing.Point(53, 176);
@@ -405,6 +454,7 @@
             this.checkBoxSocketHexSend.TabIndex = 20;
             this.checkBoxSocketHexSend.Text = "HEX发送";
             this.checkBoxSocketHexSend.UseVisualStyleBackColor = true;
+            this.checkBoxSocketHexSend.CheckedChanged += new System.EventHandler(this.checkBoxSocketHexSend_CheckedChanged);
             // 
             // checkBoxSocketHexRecive
             // 
@@ -415,54 +465,7 @@
             this.checkBoxSocketHexRecive.TabIndex = 19;
             this.checkBoxSocketHexRecive.Text = "HEX接收";
             this.checkBoxSocketHexRecive.UseVisualStyleBackColor = true;
-            // 
-            // buttonSocketSend
-            // 
-            this.buttonSocketSend.Location = new System.Drawing.Point(504, 207);
-            this.buttonSocketSend.Name = "buttonSocketSend";
-            this.buttonSocketSend.Size = new System.Drawing.Size(75, 23);
-            this.buttonSocketSend.TabIndex = 31;
-            this.buttonSocketSend.Text = "发送";
-            this.buttonSocketSend.UseVisualStyleBackColor = true;
-            // 
-            // textBoxSocketSend
-            // 
-            this.textBoxSocketSend.Location = new System.Drawing.Point(197, 207);
-            this.textBoxSocketSend.Name = "textBoxSocketSend";
-            this.textBoxSocketSend.Size = new System.Drawing.Size(301, 21);
-            this.textBoxSocketSend.TabIndex = 30;
-            // 
-            // textBoxSocketRecive
-            // 
-            this.textBoxSocketRecive.Location = new System.Drawing.Point(197, 35);
-            this.textBoxSocketRecive.Multiline = true;
-            this.textBoxSocketRecive.Name = "textBoxSocketRecive";
-            this.textBoxSocketRecive.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxSocketRecive.Size = new System.Drawing.Size(382, 164);
-            this.textBoxSocketRecive.TabIndex = 29;
-            // 
-            // comboBoxIPAddress
-            // 
-            this.comboBoxIPAddress.FormattingEnabled = true;
-            this.comboBoxIPAddress.Location = new System.Drawing.Point(53, 88);
-            this.comboBoxIPAddress.Name = "comboBoxIPAddress";
-            this.comboBoxIPAddress.Size = new System.Drawing.Size(138, 20);
-            this.comboBoxIPAddress.TabIndex = 32;
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(3, 342);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(647, 22);
-            this.statusStrip1.TabIndex = 33;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // toolStripStatusLabel
-            // 
-            this.toolStripStatusLabel.Name = "toolStripStatusLabel";
-            this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
+            this.checkBoxSocketHexRecive.CheckedChanged += new System.EventHandler(this.checkBoxSocketHexRecive_CheckedChanged);
             // 
             // Form1
             // 
