@@ -22,6 +22,7 @@ namespace CSharpTest
         private bool _ReciveCheck = false;
         private bool _SocketHexRecive = false;
         private bool _SocketHexSend = false;
+        private bool _SocketIsConnected = false;
         Socket socket;
 
         //变量定义
@@ -297,6 +298,9 @@ namespace CSharpTest
             return s;
         }
 
+
+        /*  ******************************* Socket ********************************* */
+
         /// <summary> Socket 连接打开
         /// </summary>
         /// <param name="sender"></param>
@@ -321,21 +325,60 @@ namespace CSharpTest
             IPEndPoint ipe = new IPEndPoint(ip, port);
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            if (comboBoxType.SelectedIndex == 1)
+            if(!_SocketIsConnected)
             {
-                
-                //TCP Server
-                socket.Bind(ipe);                               //绑定
-                socket.Listen(5);                               //连接数无限制
-                socket.BeginAccept(AcceptCallBack, socket);     //调用异步连接
+                if (comboBoxType.SelectedIndex == 1)
+                {
+                    try
+                    {
+                        //TCP Server
+                        socket.Bind(ipe);                               //绑定
+                        socket.Listen(5);                               //连接数无限制
+                        socket.BeginAccept(AcceptCallBack, socket);     //调用异步连接
 
-                toolStripStatusLabel.Text = "开始监听";
+                        toolStripStatusLabel.Text = "开始监听";
+                        buttonSocketOpen.Text = "断开";
+                        _SocketIsConnected = true;
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        _SocketIsConnected = false;
+                    }
+                    
+                }
+                else if (comboBoxType.SelectedIndex == 2)
+                {
+                    //TCP Client
+                    try
+                    {
+                        socket.Connect(ipe);
+                        buttonSocketOpen.Text = "断开";
+                        toolStripStatusLabel.Text = "连接成功";
+                        socket.BeginReceive(data, 0, 1024, SocketFlags.None, ReceiveCallBack, socket);
+                        _SocketIsConnected = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        _SocketIsConnected = false;
+                    }
+                    
+                }
             }
-            else if(comboBoxType.SelectedIndex == 2)
+            else
             {
-                //TCP Client
-                socket.Connect(ipe);
+                socket.Close();
+                _SocketIsConnected = false;
+                buttonSocketOpen.Text = "连接";
+
             }
+
+
+            comboBoxType.Enabled = !_SocketIsConnected;
+            comboBoxIPAddress.Enabled = !_SocketIsConnected;
+            textBoxPort.Enabled = !_SocketIsConnected;
+
         }
 
         /// <summary> 服务器端异步连接
@@ -451,6 +494,7 @@ namespace CSharpTest
             string data = textBoxSocketSend.Text;
             byte[] byteData = new byte[1];
 
+            //HEX发送或字符发送
             if (_SocketHexSend)
             {
                 try
@@ -477,8 +521,37 @@ namespace CSharpTest
                 byteData = Encoding.ASCII.GetBytes(data);
             }
 
-            foreach(Socket clientSocket in socketList)
-                clientSocket.BeginSend(byteData, 0, byteData.Length, SocketFlags.None, SendCallBack, clientSocket);
+            if(comboBoxType.SelectedIndex == 1)
+            {
+                //TCP Server
+                foreach (Socket clientSocket in socketList)
+                {
+                    try
+                    {
+                        clientSocket.BeginSend(byteData, 0, byteData.Length, SocketFlags.None, SendCallBack, clientSocket);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                    
+            }
+            else if(comboBoxType.SelectedIndex == 2)
+            {
+                //TCP Client
+                try
+                {
+                    socket.BeginSend(byteData, 0, byteData.Length, SocketFlags.None, SendCallBack, socket);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                
+                
+            }
+            
         }
 
         /// <summary> Socket异步发送
